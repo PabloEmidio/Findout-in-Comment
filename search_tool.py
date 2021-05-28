@@ -1,4 +1,4 @@
-import parsel, requests, sys, asyncio, re
+import parsel, requests, asyncio, re
 from typing import List
 
 
@@ -47,20 +47,16 @@ class InComment:
     
     @classmethod
     async def _get_comments(cls, url: str, is_local: bool)->List[str]:
-        if not is_local: html_struct = await cls._search(url)
-        else: html_struct = open(url, 'r').read()
+        html_struct = await cls._search(url) if not is_local else open(url, 'r').read()
         element = parsel.Selector(html_struct)
         return element.xpath('//comment()').getall()
     
     
     def return_might_sensitive_comments(self, url: str, is_local: bool, return_tags: bool=False)->List[dict]:
         comments: List[str] = asyncio.run(self._get_comments(url, is_local))
-
         for comment in comments:
             if not re.match('<[^>]*>', comment.replace('<!--', '').replace('-->', '')) or return_tags:
                 for might_sensitive_word in self.might_sensitive_words:
                     if might_sensitive_word.replace('O: ', '').lower() in comment.lower() and 'input' not in comment.lower():
                         yield self._check_sensitive_level(comment, by_optional_word='O: ' in might_sensitive_word)
         
-
-            

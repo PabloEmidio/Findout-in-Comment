@@ -1,5 +1,4 @@
 from search_tool import InComment
-
 import argparse
 
 def main():
@@ -15,25 +14,25 @@ def main():
     url = args.URL
     optional_words = args.w
     remove_words = args.r
-    see_entire_content = None if args.v else 61
+    character_content_limit = None if args.v else 61
     return_tags = args.return_tags
     
     obj = InComment(optional_words, remove_words)
     try:
-        if 'http' in url: is_local = False 
-        else: is_local = True
+        is_local = False if 'http' in url else True
         comments_list = obj.return_might_sensitive_comments(url, is_local, return_tags)
-        print()
         for comments_dict in comments_list:
             for level, comment in comments_dict.items():
+                print()
                 if level=='high':
-                    print(f'\033[1;31m{comment[:see_entire_content]}\033[m\n')
+                    print(f'\033[1;31m{comment[:character_content_limit]}\033[m')
                 elif level=='medium':
-                    print(f'\033[1;33m{comment[:see_entire_content]}\033[m\n')
+                    print(f'\033[1;33m{comment[:character_content_limit]}\033[m')
                 elif level=='optional':
-                    print(f'\033[1;35m{comment[:see_entire_content]}\033[m optinal input\n')
+                    print(f'\033[1;35m{comment[:character_content_limit]}\033[m optinal input')
                 else:
-                    print(f'\033[1;32m{comment[:see_entire_content]}\033[m\n')
+                    print(f'\033[1;32m{comment[:character_content_limit]}\033[m')
+        print(f'\n\nThese are some possibles sensitive comments find out in "{url}" as specificated\n')
     except Exception as error:
         print(error)
             
