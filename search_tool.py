@@ -1,8 +1,9 @@
-import parsel, requests, sys, asyncio
-import sys
+import parsel, requests, sys, asyncio, re
+from typing import List
+
 
 class InComment:
-    def __init__(self) -> None:
+    def __init__(self, optional_words: List[str]= []) -> None:
         self.might_sensitive_words = [
             'user',
             'password',
@@ -13,14 +14,15 @@ class InComment:
             'release',
             'version',
             'make',
-            'make sure',
             'replace',
             'called',
             'test',
             'debug',
             'see',
-            'by'
+            'by',
+            'tag'
         ]
+        [self.might_sensitive_words.append(f'O: {word}') for word in optional_words]
     
     
     @staticmethod
@@ -29,10 +31,12 @@ class InComment:
     
     
     @staticmethod
-    def _check_sensitive_level(comment):
-        high = ['password', 'user', 'login', 'import', 'make sure']
+    def _check_sensitive_level(comment: str, by_optional_word: bool=False)->dict:
+        high = ['password', 'user', 'login', 'import', 'make']
         medium = ['replace', '.php', 'file', 'by', 'release', 'version']
-        if  any(string  in comment for string in high):
+        if by_optional_word:
+            return {'optional': comment}
+        elif any(string  in comment for string in high):
             return {'high': comment}
         elif any(string in comment for string in medium):
             return {'medium': comment}
@@ -41,38 +45,19 @@ class InComment:
     
     
     @classmethod
-    async def _get_comments(cls, url: str)->list:
+    async def _get_comments(cls, url: str)->List[str]:
         html_struct = await cls._search(url)
         element = parsel.Selector(html_struct)
         return element.xpath('//comment()').getall()
     
     
-    def return_might_sensitive_comments(self, url: str)->list:
-        comments = asyncio.run(self._get_comments(url))
+    def return_might_sensitive_comments(self, url: str, return_tags: bool=False)->List[dict]:
+        comments: List[str] = asyncio.run(self._get_comments(url))
         for comment in comments:
-            for might_sensitive_word in self.might_sensitive_words:
-                if might_sensitive_word.lower() in comment.lower() and 'input' not in comment.lower():
-                    yield self._check_sensitive_level(comment)
+            if not re.match('<[^>]*>', comment.replace('<!--', '').replace('-->', '')) or return_tags:
+                for might_sensitive_word in self.might_sensitive_words:
+                    if might_sensitive_word.replace('O: ', '').lower() in comment.lower() and 'input' not in comment.lower():
+                        yield self._check_sensitive_level(comment, by_optional_word='O: ' in might_sensitive_word)
         
-                
 
-
-if __name__ == '__main__':
-    obj = InComment()
-    try:
-        url = sys.argv[1]
-        if 'http' in url:
-            comments_list = obj.return_might_sensitive_comments(url)
-            for comments_dict in comments_list:
-                for level, comment in comments_dict.items():
-                    if level=='high':
-                        print(f'\033[1;31m{comment}\033[m')
-                    elif level=='medium':
-                        print(f'\033[1;33m{comment}\033[m')
-                    else:
-                        print(f'\033[1;32m{comment}\033[m')
-    except IndexError:
-        raise TypeError('TypeError: expected 1 argument')
-    except Exception as error:
-        print(error)
             
