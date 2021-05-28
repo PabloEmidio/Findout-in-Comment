@@ -1,4 +1,4 @@
-<h1 align="center">In Comment</h1>
+<h1 align="center">Find Out in Comment</h1>
 <h2 align="center" >
 Find sensetive comment out in HTML<br><br>
     <a href="https://github.com/PabloEmidio/Findout-in-Comment/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/PabloEmidio/Findout-in-Comment?style=social"></a>
