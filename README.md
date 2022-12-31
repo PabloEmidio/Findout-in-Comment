@@ -12,37 +12,12 @@ This is a pre-attack hacker tool that searches for sensitives words in HTML comm
 
 ---
 
-# ⚈ Requirements
+# ⚈ How to use
 
+```bash
+$ pip install findout-in-comment
+$ findout -v --return-tags $URL_OR_FILE_PATH
 ```
-pip3 install -r requirements.txt
-```
----
-
-# ⚈ Use example
-
-<h3 align="center">Find default sensitives words out, showing entire tag comment and allowing to show comments with html code</h3>
-<p align="center">
-
-  <img align="center" src=".images/example_01.png"><br>
-</p>
-
----
-
-<h3 align="center">Find default sensitives words out, showing entire tag comment, allowing to show comments with html code and taking the word "tag" out for the search</h3>
-
-<p align="center">
-  <img align="center" src=".images/example_02.png"><br>
-</p>
-
----
-
-<h3 align="center">Find default sensitives words out in local file html, showing entire tag comment, allowing to show comments with html code and looking for optional word "md5"</h3>
-
-<p align="center">
-  <img align="center" src=".images/example_03.png"><br>
-</p>
-
 
 ---
 
@@ -53,7 +28,9 @@ The following tools were used in the construction of the project:
 
 - [Python](https://www.python.org/)
 - [Parsel](https://pypi.org/project/parsel/)
-
+- [Poetry](https://python-poetry.org/)
+- [Flake8](https://flake8.pycqa.org/en/latest/)
+- [pre-commit](https://pre-commit.com/)
 ---
 
 # ⚈ Bugs and Features
