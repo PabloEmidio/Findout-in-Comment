@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "findout-in-comment"
-version = "0.1.0"
+version = "0.1.1"
 description = "A pre-attack hacker tool to find out sensitives comments in HTML"
 authors = ["Pablo Emidio <p.emidiodev@gmail.com>"]
 repository = "https://github.com/PabloEmidio/Findout-in-Comment"
