@@ -7,12 +7,27 @@ repos:
       -   id: check-yaml
           args: [--unsafe]
       -   id: trailing-whitespace
-      -   id: double-quote-string-fixer
       -   id: no-commit-to-branch
           args: [--branch, main, --branch, development]
+
+-   repo: https://github.com/asottile/pyupgrade
+    rev: 'v3.3.1'
+    hooks:
+      -   id: pyupgrade
+
+-   repo: https://github.com/pycqa/isort
+    rev: '5.11.4'
+    hooks:
+      -   id: isort
+
+-   repo: https://github.com/psf/black
+    rev: '22.12.0'
+    hooks:
+      -   id: black
+
 -   repo: https://github.com/pycqa/flake8
-    alias: flake8
-    verbose: true
-    rev: '4.0.1'
+    rev: '6.0.0'
     hooks:
       -   id: flake8
+          additional_dependencies: [flake8-bugbear]
+
